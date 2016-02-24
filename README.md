@@ -4,7 +4,7 @@
 nodebrew use v4.0.0
 npm init  # create package.json
 npm install gulp --save-dev  # save gulp to package.json dev part
-npm install gulp-ruby-sass gulp-autoprefixer gulp-minify-css gulp-jshint gulp-concat gulp-uglify gulp-imagemin gulp-notify gulp-rename gulp-livereload gulp-cache del gulp-util gulp-connect --save-dev  # Install gulp-plugins
+npm install gulp-ruby-sass gulp-autoprefixer gulp-minify-css gulp-jshint gulp-concat gulp-uglify gulp-imagemin gulp-notify gulp-rename gulp-livereload gulp-cache del gulp-util gulp-connect connect-modrewrite --save-dev  # Install gulp-plugins
 touch gulpfile.js  # create a gulp settings file
 => Add Content For Plugins:
     var gulp = require('gulp'),  
@@ -19,6 +19,8 @@ touch gulpfile.js  # create a gulp settings file
         notify = require('gulp-notify'),
         cache = require('gulp-cache'),
         livereload = require('gulp-livereload'),
+        connect = require('gulp-connect'),
+        modRewrite = require('connect-modrewrite'),
         del = require('del');
 
 => Add Content For Task Defination:
@@ -35,4 +37,5 @@ touch gulpfile.js  # create a gulp settings file
 ~~~
 https://987.tw/2014/07/09/gulpru-men-zhi-nan/
 https://github.com/jackfranklin/gulp-load-plugins
+https://www.npmjs.com/package/connect-modrewrite
 ~~~

@@ -16,6 +16,7 @@ var gulp = require('gulp'),
     livereload = require('gulp-livereload'),
     del = require('del'),
     connect = require('gulp-connect'), // Gulp plugin to run a webserver (with LiveReload)
+    modRewrite = require('connect-modrewrite'),
     gutil = require('gulp-util');  // log util
 
 
@@ -45,7 +46,18 @@ gulp.task('connect', function() {
     connect.server({
         root: 'dist',
         livereload: true,
-        port: 8888
+        port: 8888,
+        // by rewrite Module
+        middleware: function() {
+            return [
+                modRewrite([
+                    '^/test$ /index.html',
+                    '^/api/(.*)$ http://localhost:8080/$1 [P]',
+                    '^/api2/(.*)$ http://java.dev.gslssd.com/api/versions/check/?path=$1 [P]',
+                    '^/test/\\d*/\\d*$ /flag.html [L]'
+                ])
+            ];
+        }
     });
 });
 gulp.task('recompile', function(){
