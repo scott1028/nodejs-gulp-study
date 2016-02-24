@@ -38,6 +38,7 @@ gulp
 gulp --gulpfile gulpfile_templates/gulpfile01.js
 ~~~
 
+- wiredep 內建 gulp-useref/grunt-useref 功能，當然也可以單獨使用 useref ！
 
 #### ref
 
