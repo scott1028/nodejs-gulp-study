@@ -34,8 +34,16 @@ gulp.task('main', function() {
 });
 
 
+// Testing plugin sample
+gulp.task('testUglifyPlugin', function() {
+    gutil.log('Do something before#3.');
+    return gulp.src('*.js').pipe(uglify())
+        .pipe(gulp.dest('dist/output'));
+});
+
+
 // main
 gulp.task('default', ['before'], function() {  
     // gulp.start('styles', 'scripts', 'images');
-    gulp.start('main');
+    gulp.start('main', 'testUglifyPlugin');
 });
