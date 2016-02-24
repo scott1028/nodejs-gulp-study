@@ -55,7 +55,6 @@ gulp.task('connect', function() {
                 modRewrite([
                     '^/test$ /index.html',
                     '^/api/(.*)$ http://localhost:8080/$1 [P]',
-                    '^/api2/(.*)$ http://java.dev.gslssd.com/api/versions/check/?path=$1 [P]',
                     '^/test/\\d*/\\d*$ /flag.html [L]'
                 ])
             ];
