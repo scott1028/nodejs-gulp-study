@@ -30,6 +30,11 @@ touch gulpfile.js  # create a gulp settings file
     });
 
 ~~~
+~~~
+gulp
+    or
+gulp --gulpfile gulpfile.template01.js
+~~~
 
 
 #### ref
