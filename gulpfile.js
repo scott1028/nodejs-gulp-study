@@ -33,6 +33,8 @@ gulp.task('main', function() {
     gutil.log('Do something before#2.');
     return gulp.src('*.js').pipe(notify({ message: 'Styles task complete' }));
     // .pipe(autoprefixer('last 2 version'));  // combine CSS Autoprefixer task by pipe read output from last task.
+    // use .pipe( ... ) to load output from last task and input to next one.
+    // You can remote 'return' syntax, it's not necessary.
 });
 
 
