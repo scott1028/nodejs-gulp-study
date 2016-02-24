@@ -17,32 +17,21 @@ var gulp = require('gulp'),
     del = require('del'),
     connect = require('gulp-connect'), // Gulp plugin to run a webserver (with LiveReload)
     modRewrite = require('connect-modrewrite'),
+    htmlmin = require('gulp-htmlmin'),
     gutil = require('gulp-util');  // log util
 
 
 // To do your clean task here.
 gulp.task('before', function() {
-    // console.log('Do something before#1.');
-    gutil.log('Do something before#1.');
-    return 'this plugin output data.';
+    gutil.log('Do Clean Task!');
 });
 
 
 // You can concat you plugin task here.
-gulp.task('main', function() {
-    gutil.log('Do something before#2.');
-    return gulp.src('*.js').pipe(notify({ message: 'Styles task complete' }));
-    // .pipe(autoprefixer('last 2 version'));  // combine CSS Autoprefixer task by pipe read output from last task.
-    // use .pipe( ... ) to load output from last task and input to next one.
-    // You can remote 'return' syntax, it's not necessary.
-});
-
-
-// Testing plugin sample, you can remove the 'return' syntax.
-gulp.task('testUglifyPlugin', function() {
-    gutil.log('Do something before#3.');
-    gulp.src('*.js').pipe(uglify())
-        .pipe(gulp.dest('dist/output'));
+gulp.task('recompile', function() {
+    gulp.src('src/**/*.js').pipe(uglify()).pipe(gulp.dest('dist'));
+    gulp.src('src/**/*.html').pipe(htmlmin({collapseWhitespace: true})).pipe(gulp.dest('dist'))
+    gulp.src('src/**/*.css').pipe(minifycss({compatibility: 'ie8'})).pipe(gulp.dest('dist'))
 });
 gulp.task('connect', function() {
     connect.server({
@@ -60,12 +49,8 @@ gulp.task('connect', function() {
         }
     });
 });
-gulp.task('recompile', function(){
-    // connect.reload();
-    gulp.src('*.js').pipe(uglify()).pipe(gulp.dest('dist/output'));
-});
 gulp.task('watch', function(){
-    gulp.watch(['*.js'], ['recompile']);
+    gulp.watch(['src/**/*.js', 'src/**/*.html', 'src/**/*.css'], ['recompile']);
   // gulp.watch(['./sass/*.scss'], ['sass']);
   // gulp.watch(['./scripts/*.js'], ['traceur']);
   // gulp.watch(['./dist/**/*.*'], ['reload']);
@@ -75,5 +60,5 @@ gulp.task('watch', function(){
 // main
 gulp.task('default', ['before', 'watch'], function() {  
     // gulp.start('styles', 'scripts', 'images');
-    gulp.start('main', 'testUglifyPlugin', 'connect');
+    gulp.start('recompile', 'connect');
 });
