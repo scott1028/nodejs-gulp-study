@@ -18,6 +18,8 @@ var gulp = require('gulp'),
     connect = require('gulp-connect'), // Gulp plugin to run a webserver (with LiveReload)
     modRewrite = require('connect-modrewrite'),
     htmlmin = require('gulp-htmlmin'),
+    // wiredep = require('gulp-wiredep'),
+    useref = require('gulp-useref'),
     gutil = require('gulp-util');  // log util
 
 
@@ -29,8 +31,17 @@ gulp.task('before', function() {
 
 // You can concat you plugin task here.
 gulp.task('recompile', function() {
-    gulp.src('src/**/*.js').pipe(uglify()).pipe(gulp.dest('dist'));
-    gulp.src('src/**/*.html').pipe(htmlmin({collapseWhitespace: true})).pipe(gulp.dest('dist'))
+    // gulp.src('src/**/*.js').pipe(uglify()).pipe(gulp.dest('dist'));
+    // gulp.src('src/**/*.js').pipe(concat('all.js')).pipe(gulp.dest('dist'));
+    // by order
+    // gulp.src(['src/scripts/**/*.js', 'src/*.js']).pipe(concat('all.js')).pipe(gulp.dest('dist'));
+    gulp.src(['src/*.js', 'src/scripts/**/*.js']).pipe(concat('all.js')).pipe(gulp.dest('dist'));
+    // gulp.src('src/**/*.html').pipe(htmlmin({collapseWhitespace: true})).pipe(gulp.dest('dist'))
+    // gulp.src('src/**/*.html').pipe(htmlmin({collapseWhitespace: true})).pipe(wiredep({
+    //     optional: 'configuration',
+    //     goes: 'here'
+    // })).pipe(gulp.dest('./dist'));
+    gulp.src('src/**/*.html').pipe(useref()).pipe(htmlmin({collapseWhitespace: true})).pipe(gulp.dest('./dist'));
     gulp.src('src/**/*.css').pipe(minifycss({compatibility: 'ie8'})).pipe(gulp.dest('dist'))
 });
 gulp.task('connect', function() {

@@ -2,9 +2,10 @@
 
 ~~~
 nodebrew use v4.0.0
+npm install -g bower
 npm init  # create package.json
 npm install gulp --save-dev  # save gulp to package.json dev part
-npm install gulp-ruby-sass gulp-autoprefixer gulp-minify-css gulp-jshint gulp-concat gulp-uglify gulp-imagemin gulp-notify gulp-rename gulp-livereload gulp-cache del gulp-util gulp-htmlmin --save-dev gulp-connect connect-modrewrite --save-dev  # Install gulp-plugins
+npm install gulp-ruby-sass gulp-autoprefixer gulp-minify-css gulp-jshint gulp-concat gulp-uglify gulp-imagemin gulp-notify gulp-rename gulp-livereload gulp-cache del gulp-util gulp-htmlmin wiredep gulp-wiredep gulp-useref --save-dev gulp-connect connect-modrewrite --save-dev  # Install gulp-plugins
 touch gulpfile.js  # create a gulp settings file
 => Add Content For Plugins:
     var gulp = require('gulp'),  
@@ -44,4 +45,8 @@ gulp --gulpfile gulpfile_templates/gulpfile01.js
 https://987.tw/2014/07/09/gulpru-men-zhi-nan/
 https://github.com/jackfranklin/gulp-load-plugins
 https://www.npmjs.com/package/connect-modrewrite
+https://www.npmjs.com/package/gulp-concat
+https://www.npmjs.com/package/wiredep
+https://www.npmjs.com/package/gulp-wiredep
+https://github.com/klei/gulp-inject
 ~~~
