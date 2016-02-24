@@ -1,9 +1,10 @@
 #### How to start
 
 ~~~
+nodebrew use v4.0.0
 npm init  # create package.json
 npm install gulp --save-dev  # save gulp to package.json dev part
-npm install gulp-ruby-sass gulp-autoprefixer gulp-minify-css gulp-jshint gulp-concat gulp-uglify gulp-imagemin gulp-notify gulp-rename gulp-livereload gulp-cache del gulp-util --save-dev  # Install gulp-plugins
+npm install gulp-ruby-sass gulp-autoprefixer gulp-minify-css gulp-jshint gulp-concat gulp-uglify gulp-imagemin gulp-notify gulp-rename gulp-livereload gulp-cache del gulp-util gulp-connect --save-dev  # Install gulp-plugins
 touch gulpfile.js  # create a gulp settings file
 => Add Content For Plugins:
     var gulp = require('gulp'),  

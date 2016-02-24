@@ -15,6 +15,7 @@ var gulp = require('gulp'),
     cache = require('gulp-cache'),
     livereload = require('gulp-livereload'),
     del = require('del'),
+    connect = require('gulp-connect'), // Gulp plugin to run a webserver (with LiveReload)
     gutil = require('gulp-util');  // log util
 
 
@@ -29,21 +30,38 @@ gulp.task('before', function() {
 // You can concat you plugin task here.
 gulp.task('main', function() {
     gutil.log('Do something before#2.');
-    return notify({ message: 'Styles task complete' })
-        .pipe(autoprefixer('last 2 version'));  // combine task by pipe read output from last task.
+    return gulp.src('*.js').pipe(notify({ message: 'Styles task complete' }));
+    // .pipe(autoprefixer('last 2 version'));  // combine CSS Autoprefixer task by pipe read output from last task.
 });
 
 
-// Testing plugin sample
+// Testing plugin sample, you can remove the 'return' syntax.
 gulp.task('testUglifyPlugin', function() {
     gutil.log('Do something before#3.');
-    return gulp.src('*.js').pipe(uglify())
+    gulp.src('*.js').pipe(uglify())
         .pipe(gulp.dest('dist/output'));
+});
+gulp.task('connect', function() {
+    connect.server({
+        root: 'dist',
+        livereload: true,
+        port: 8888
+    });
+});
+gulp.task('recompile', function(){
+    // connect.reload();
+    gulp.src('*.js').pipe(uglify()).pipe(gulp.dest('dist/output'));
+});
+gulp.task('watch', function(){
+    gulp.watch(['*.js'], ['recompile']);
+  // gulp.watch(['./sass/*.scss'], ['sass']);
+  // gulp.watch(['./scripts/*.js'], ['traceur']);
+  // gulp.watch(['./dist/**/*.*'], ['reload']);
 });
 
 
 // main
-gulp.task('default', ['before'], function() {  
+gulp.task('default', ['before', 'watch'], function() {  
     // gulp.start('styles', 'scripts', 'images');
-    gulp.start('main', 'testUglifyPlugin');
+    gulp.start('main', 'testUglifyPlugin', 'connect');
 });
