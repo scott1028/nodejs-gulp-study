@@ -18,7 +18,7 @@ var gulp = require('gulp'),
     connect = require('gulp-connect'), // Gulp plugin to run a webserver (with LiveReload)
     modRewrite = require('connect-modrewrite'),
     htmlmin = require('gulp-htmlmin'),
-    // wiredep = require('gulp-wiredep'),
+    // wiredep = require('gulp-wiredep'), // 使用 wiredep 會需要 bower
     useref = require('gulp-useref'),
     gutil = require('gulp-util');  // log util
 
