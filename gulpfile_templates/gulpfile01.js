@@ -35,7 +35,7 @@ gulp.task('recompile', function() {
     // gulp.src('src/**/*.js').pipe(concat('all.js')).pipe(gulp.dest('dist'));
     // by order
     // gulp.src(['src/scripts/**/*.js', 'src/*.js']).pipe(concat('all.js')).pipe(gulp.dest('dist'));
-    gulp.src(['src/*.js', 'src/scripts/**/*.js']).pipe(concat('all.js')).pipe(gulp.dest('dist'));
+    gulp.src(['src/*.js', 'src/scripts/**/*.js']).pipe(concat('all.js')).pipe(gulp.dest('dist'));  // .src 順序決定組合檔案的內容排列順序
     // gulp.src('src/**/*.html').pipe(htmlmin({collapseWhitespace: true})).pipe(gulp.dest('dist'))
     // gulp.src('src/**/*.html').pipe(htmlmin({collapseWhitespace: true})).pipe(wiredep({
     //     optional: 'configuration',
