@@ -55,7 +55,7 @@ gulp.task('connect', function() {
                 modRewrite([
                     '^/test$ /index.html',
                     '^/api/(.*)$ http://localhost:8080/$1 [P]',
-                    '!\\.js|\\.html|\\.css|\\.png|\\.jpg|\\.gif|\\.svg|\\.ttf|\\.woff|\\.ico$ /index.html [L]',
+                    '!\\.js|\\.html|\\.css|\\.png|\\.jpg|\\.gif|\\.svg|\\.ttf|\\.woff|\\.ico$ /index.html [L]',  // for AngularJS HTML5Mode Support for removing Hash(#)
                     '^/test/\\d*/\\d*$ /flag.html [L]'
                 ])
             ];
