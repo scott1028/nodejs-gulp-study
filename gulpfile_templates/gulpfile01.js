@@ -54,6 +54,7 @@ gulp.task('connect', function() {
             return [
                 modRewrite([
                     '^/api/(.*)$ http://127.0.0.1:8080/api/$1 [P]',
+                    '!\\.js|\\.html|\\.css|\\.png|\\.jpg|\\.gif|\\.svg|\\.ttf|\\.woff|\\.ico$ /index.html [L]',
                     '^/(.*)$ http://127.0.0.1:3333/$1 [P]',
                 ])
             ];
