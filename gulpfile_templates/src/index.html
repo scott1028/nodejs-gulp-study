@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>KMS</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <!-- build:css /app.css -->
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
+    <link rel="stylesheet" href="/components/reset-css/reset.css" />
+    <link rel="stylesheet" href="/components/tether/dist/css/tether.css" />
+    <link rel="stylesheet" href="/components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="/components/jquery-ui/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" href="/components/jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.css" />
+    <link rel="stylesheet" href="/components/animate.css/animate.css" />
+    <link rel="stylesheet" href="/assets/app.css" />
+    <!-- endbuild -->
+</head>
+
+<body ng-app="Taisys.KMS">
+    <script src="https://scott1028.github.io/sct-plugin/src/utils.js" defer></script>
+    <script src="https://scott1028.github.io/sct-plugin/src/directives.js" defer></script>
+    <script src="https://scott1028.github.io/sct-plugin/src/formatters.js" defer></script>
+    <script src="https://scott1028.github.io/sct-plugin/src/validators.js" defer></script>
+    <script src="https://scott1028.github.io/sct-plugin/src/helpers.js" defer></script>
+    <!-- build:js /app.js -->
+    <script src="/components/jquery/dist/jquery.js"></script>
+    <script src="/components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
+    <script src="/components/tether/dist/js/tether.js"></script>
+    <script src="/components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/components/angular/angular.js"></script>
+    <script src="/components/angular-route/angular-route.js"></script>
+    <script src="/components/angular-animate/angular-animate.js"></script>
+    <script src="/components/angular-cookies/angular-cookies.js"></script>
+    <script src="/components/ngMask/dist/ngMask.js"></script>
+    <script src="/components/angular-aria/angular-aria.js"></script>
+    <script src="/components/jqueryui-timepicker-addon/dist/jquery-ui-timepicker-addon.min.js"></script>
+    <script src="/src/hacks/ngMask.override.js"></script>
+    <script src="/src/configure.js"></script>
+    <script src="/src/foundation/MenuService.js"></script>
+    <script src="/src/foundation/Menu.js"></script>
+    <script src="/src/foundation/Auth.js"></script>
+    <script src="/src/features/ChipKencMgm.js"></script>
+    <script src="/src/features/EngineCosMgm.js"></script>
+    <!-- endbuild -->
+
+    <nav class="kms-navbar navbar navbar-light bg-faded" ng-controller="MenuController as self">
+        <div class="kms-navbar-container">
+            <a class="navbar-brand" href="#" ng-click="goPage('/');"><h3 style="opacity: 0.9; text-shadow: 2px 2px 3px #aaa;">KMS</h3></a>
+            <ul ng-if="logined" class="nav navbar-nav" ng-include src="'/src/foundation/MenuItem.html'"></ul>
+        </div>
+    </nav>
+    <div ng-view ajaxing-block-by="ajaxing"></div>
+</body>
+
+</html>
