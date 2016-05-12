@@ -1,0 +1,30 @@
+{
+  "name": "KMS",
+  "description": "KMS",
+  "main": "index.html",
+  "authors": [
+    "scott.lan <scott.lan@taisys.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/angular/material-start",
+  "moduleType": [
+    "amd"
+  ],
+  "dependencies": {
+    "angular": "^1.4.9",
+    "angular-animate": "^1.4.9",
+    "angular-aria": "^1.4.9",
+    "angular-mocks": "^1.4.9",
+    "angular-cookies": "^1.4.9",
+    "bower": "*",
+    "angular-route": "^1.4.9",
+    "bootstrap": "4.0",
+    "tether": "^1.2.0",
+    "jquery-ui": "1.10.3",
+    "jqueryui-timepicker-addon": "^1.5.3",
+    "reset-css": "^2.0.2011012603",
+    "animate.css": "^3.4.0",
+    "ngMask": "angular-mask#^3.0.16",
+    "sctPlugin": "https://repo.taisys.com/ssd/sct-plugin.git"
+  }
+}
