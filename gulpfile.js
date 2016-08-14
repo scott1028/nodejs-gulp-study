@@ -2,7 +2,7 @@
 
 
 // load plugins
-var gulp = require('gulp'),  
+var gulp = require('gulp'),
     sass = require('gulp-ruby-sass'),
     autoprefixer = require('gulp-autoprefixer'),
     minifycss = require('gulp-minify-css'),
@@ -17,65 +17,71 @@ var gulp = require('gulp'),
     del = require('del'),
     connect = require('gulp-connect'), // Gulp plugin to run a webserver (with LiveReload)
     modRewrite = require('connect-modrewrite'),
-    gutil = require('gulp-util');  // log util
+    htmlmin = require('gulp-htmlmin'),
+    // wiredep = require('gulp-wiredep'), // 使用 wiredep 會需要 bower
+    useref = require('gulp-useref'),
+    strip = require('gulp-strip-comments'), // remove comment
+    inject = require('gulp-inject'),
+    gutil = require('gulp-util'); // log util
 
 
 // To do your clean task here.
 gulp.task('before', function() {
-    // console.log('Do something before#1.');
-    gutil.log('Do something before#1.');
-    return 'this plugin output data.';
+    gutil.log('Do Clean Task!');
 });
 
 
 // You can concat you plugin task here.
-gulp.task('main', function() {
-    gutil.log('Do something before#2.');
-    return gulp.src('*.js').pipe(notify({ message: 'Styles task complete' }));
-    // .pipe(autoprefixer('last 2 version'));  // combine CSS Autoprefixer task by pipe read output from last task.
-    // use .pipe( ... ) to load output from last task and input to next one.
-    // You can remote 'return' syntax, it's not necessary.
-});
-
-
-// Testing plugin sample, you can remove the 'return' syntax.
-gulp.task('testUglifyPlugin', function() {
-    gutil.log('Do something before#3.');
-    gulp.src('*.js').pipe(uglify())
-        .pipe(gulp.dest('dist/output'));
+gulp.task('recompile', function() {
+    // Minify This Project
+    gulp.src('app/index.html').pipe(useref()).on('error', gutil.log).pipe(gulp.dest('./dist'));
+    gulp.src('app/assets/**').pipe(gulp.dest('dist/assets'));
+    gulp.src('app/src/**/*.html').pipe(gulp.dest('dist/src'));
+    // For jQuery-UI Image
+    gulp.src('app/components/jquery-ui/themes/base/images/*.png').pipe(gulp.dest('dist/images'));
 });
 gulp.task('connect', function() {
+    // dev
     connect.server({
-        root: 'dist',
-        livereload: true,
+        root: 'app',
+        livereload: false,
         port: 8888,
         // by rewrite Module
         middleware: function() {
             return [
                 modRewrite([
-                    '^/test$ /index.html',
-                    '^/api/(.*)$ http://localhost:8080/$1 [P]',
-                    '!\\.js|\\.html|\\.css|\\.png|\\.jpg|\\.gif|\\.svg|\\.ttf|\\.woff|\\.ico$ /index.html [L]',  // for AngularJS HTML5Mode Support for removing Hash(#)
-                    '^/test/\\d*/\\d*$ /flag.html [L]'
+                    '^/api/(.*)$ http://127.0.0.1:8080/api/$1 [P]',
+                    '!\\.js|\\.html|\\.css|\\.png|\\.jpg|\\.gif|\\.svg|\\.ttf|\\.woff|\\.ico$ /index.html [L]'
+                ])
+            ];
+        }
+    });
+
+    // dist
+    connect.server({
+        root: 'dist',
+        livereload: false,
+        port: 9999,
+        // by rewrite Module
+        middleware: function() {
+            return [
+                modRewrite([
+                    '^/api/(.*)$ http://127.0.0.1:8080/api/$1 [P]',
+                    '!\\.js|\\.html|\\.css|\\.png|\\.jpg|\\.gif|\\.svg|\\.ttf|\\.woff|\\.ico$ /index.html [L]'
                 ])
             ];
         }
     });
 });
-gulp.task('recompile', function(){
-    // connect.reload();
-    gulp.src('*.js').pipe(uglify()).pipe(gulp.dest('dist/output'));
-});
-gulp.task('watch', function(){
-    gulp.watch(['*.js'], ['recompile']);
-  // gulp.watch(['./sass/*.scss'], ['sass']);
-  // gulp.watch(['./scripts/*.js'], ['traceur']);
-  // gulp.watch(['./dist/**/*.*'], ['reload']);
+
+gulp.task('watch', function() {
+    // By Watch files changed to recompile
+    gulp.watch(['app/index.html', 'app/src/**/*.js', 'app/assets/**', 'app/src/**/*.html'], ['recompile']);
 });
 
 
 // main
-gulp.task('default', ['before', 'watch'], function() {  
+gulp.task('default', ['before', 'watch'], function() {
     // gulp.start('styles', 'scripts', 'images');
-    gulp.start('main', 'testUglifyPlugin', 'connect');
+    gulp.start('recompile', 'connect');
 });
