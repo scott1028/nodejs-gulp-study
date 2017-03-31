@@ -3,7 +3,7 @@
   "main": "dist/index.html",
   "private": true,
   "version": "0.0.0",
-  "description": "Taisys VSF",
+  "description": "VSF",
   "dependencies": {
     "babel-plugin-transform-es2015-template-literals": "^6.22.0",
     "babel-plugin-transform-remove-console": "^6.8.1",
