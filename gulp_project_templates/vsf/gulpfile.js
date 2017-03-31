@@ -24,7 +24,8 @@ var gulp = require('gulp'),
     shell = require('gulp-shell'),
     gutil = require('gulp-util'), // log util
     babel = require('gulp-babel'),
-    replace = require('gulp-replace');
+    replace = require('gulp-replace'),
+    os = require('os');
 
 
 var htmlminConfig = {
