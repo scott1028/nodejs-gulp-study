@@ -5,7 +5,8 @@
 var gulp = require('gulp'),
     sass = require('gulp-ruby-sass'),
     autoprefixer = require('gulp-autoprefixer'),
-    minifycss = require('gulp-minify-css'),
+    // minifycss = require('gulp-minify-css'),
+    csso = require('gulp-csso'),
     jshint = require('gulp-jshint'),
     uglify = require('gulp-uglify'),
     imagemin = require('gulp-imagemin'),
@@ -49,7 +50,7 @@ var babelConfig = {
 var replacePattern = function(){
     var target = process.env.ENV || 'dev';
     var map = {};
-    map.dev = `window.CONFIG.prefixPath = '/taidev';`;
+    map.dev = `window.CONFIG.prefixPath = '/taisysdev';`;
     map.stg = `window.CONFIG.prefixPath = '/taistg';`;
     map.uat = `window.CONFIG.prefixPath = '/taiuat';`;
     map.global = `window.CONFIG.prefixPath = '/taiprd';`;
@@ -69,6 +70,8 @@ gulp.task('before', function() {
 
 // You can concat you plugin task here.
 gulp.task('recompile', ['prepare'], function() {
+    // use sass for minify
+    // gulp.src('./dist/style/app.css', {base: './'}).pipe(csso({debug: true})).pipe(gulp.dest('./'));
     gulp.src('./dist/scripts/app.js', {base: './'}).pipe(replace(`window.CONFIG.prefixPath = '/taisysdev';`, replacePattern())).pipe(babel(babelConfig)).pipe(gulp.dest('./'));
     gulp.src('./dist/index.html', {base: './'}).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('./'));
 
@@ -91,18 +94,17 @@ gulp.task('sass', shell.task([
 ]));
 
 gulp.task('connect', function() {
+    var originRule = require('./.htaccess.js');
+
     // dev
     connect.server({
         root: 'app',
         livereload: false,
-        port: 3333,
+        port: originRule.port,
         // by rewrite Module
         middleware: function() {
             return [
-                modRewrite([
-                    '^/api/(.*)$ http://aaa.com/api/$1 [P]',
-                    '!\\.js|\\.html|\\.css|\\.png|\\.jpg|\\.gif|\\.svg|\\.ttf|\\.woff|\\.ico$ /index.html [L]'
-                ])
+                modRewrite(originRule.rewrite)
             ];
         }
     });
@@ -111,14 +113,11 @@ gulp.task('connect', function() {
     connect.server({
         root: 'dist',
         livereload: false,
-        port: 4444,
+        port: originRule.port + 1,
         // by rewrite Module
         middleware: function() {
             return [
-                modRewrite([
-                    '^/api/(.*)$ http://aaa.com/api/$1 [P]',
-                    '!\\.js|\\.html|\\.css|\\.png|\\.jpg|\\.gif|\\.svg|\\.ttf|\\.woff|\\.ico$ /index.html [L]'
-                ])
+                modRewrite(originRule.rewrite)
             ];
         }
     });
