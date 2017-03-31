@@ -66,16 +66,9 @@ gulp.task('before', function() {
     gutil.log('Do Clean Task!');
 });
 
-
 // You can concat you plugin task here.
-gulp.task('recompile', ['minifyPrepare'], function() {
-    // Minify This Project
-    shell.task([
-        'sass --update ./app/styles/:./app/styles',
-        'git rev-parse HEAD > dist/head.txt',
-    ])();
-
-    gulp.src('./dist/scripts/app.js', {base: './'}).pipe(replace(`window.CONFIG.prefixPath = '/taidev';`, replacePattern())).pipe(babel(babelConfig)).pipe(gulp.dest('./'));
+gulp.task('recompile', ['prepare'], function() {
+    gulp.src('./dist/scripts/app.js', {base: './'}).pipe(replace(`window.CONFIG.prefixPath = '/taisysdev';`, replacePattern())).pipe(babel(babelConfig)).pipe(gulp.dest('./'));
     gulp.src('./dist/index.html', {base: './'}).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('./'));
 
     gulp.src(['app/views/**/*.html']).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('dist/views'));
@@ -84,10 +77,18 @@ gulp.task('recompile', ['minifyPrepare'], function() {
     // For jQuery-UI Image
     gulp.src('app/components/jquery-ui/themes/base/images/*.{png,gif}').pipe(gulp.dest('dist/images'));
 });
+
 // Ref: https://github.com/gulpjs/gulp/blob/master/docs/API.md#async-task-support
-gulp.task('minifyPrepare', function(cb){
+gulp.task('prepare', ['sass'], function(cb){
     gulp.src('app/index.html').pipe(useref()).on('error', gutil.log).pipe(gulp.dest('./dist')).on('end', cb);
 });
+
+// Minify This Project
+gulp.task('sass', shell.task([
+        'sass --update ./app/styles/:./app/styles',
+        'mkdir -p dist && git rev-parse HEAD > dist/head.txt'
+]));
+
 gulp.task('connect', function() {
     // dev
     connect.server({
@@ -123,6 +124,10 @@ gulp.task('connect', function() {
 });
 
 gulp.task('watch', function() {
+    // skip watch if OS is windows
+    if(os.platform().match(/win32/) === null)
+        return;
+
     // By Watch files changed to recompile
     gulp.watch(['app/index.html', 'app/**/*.js', 'app/**/*.{sass,scss,css}', 'app/**/*.html'], ['recompile']);
 });
