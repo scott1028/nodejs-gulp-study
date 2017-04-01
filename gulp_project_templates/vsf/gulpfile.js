@@ -71,7 +71,7 @@ gulp.task('before', function() {
 // You can concat you plugin task here.
 gulp.task('recompile', ['prepare'], function() {
     // use sass for minify
-    // gulp.src('./dist/style/app.css', {base: './'}).pipe(csso({debug: true})).pipe(gulp.dest('./'));
+    gulp.src('./dist/styles/app.css', {base: './'}).pipe(csso({debug: true})).pipe(gulp.dest('./'));
     gulp.src('./dist/scripts/app.js', {base: './'}).pipe(replace(`window.CONFIG.prefixPath = '/taisysdev';`, replacePattern())).pipe(babel(babelConfig)).pipe(gulp.dest('./'));
     gulp.src('./dist/index.html', {base: './'}).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('./'));
 
