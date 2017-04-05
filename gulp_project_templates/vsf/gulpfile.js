@@ -27,7 +27,7 @@ var gulp = require('gulp'),
     babel = require('gulp-babel'),
     replace = require('gulp-replace'),
     os = require('os'),
-    es = require('event-stream');
+    es = require('event-stream');  // `async` is an options lib.
 
 
 var htmlminConfig = {
