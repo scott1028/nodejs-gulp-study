@@ -26,7 +26,8 @@ var gulp = require('gulp'),
     gutil = require('gulp-util'), // log util
     babel = require('gulp-babel'),
     replace = require('gulp-replace'),
-    os = require('os');
+    os = require('os'),
+    es = require('event-stream');
 
 
 var htmlminConfig = {
@@ -70,16 +71,20 @@ gulp.task('before', function() {
 
 // You can concat you plugin task here.
 gulp.task('recompile', ['prepare'], function() {
-    // use csso for minify
-    gulp.src('./dist/styles/app.css', {base: './'}).pipe(csso({debug: true})).pipe(gulp.dest('./'));
-    gulp.src('./dist/scripts/app.js', {base: './'}).pipe(replace(`window.CONFIG.prefixPath = '/taisysdev';`, replacePattern())).pipe(babel(babelConfig)).pipe(gulp.dest('./'));
-    gulp.src('./dist/index.html', {base: './'}).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('./'));
+    // merge all event-stream
+    var all = [
+        // use csso for minify
+        gulp.src('./dist/styles/app.css', {base: './'}).pipe(csso({debug: true})).pipe(gulp.dest('./')),
+        gulp.src('./dist/scripts/app.js', {base: './'}).pipe(replace(`window.CONFIG.prefixPath = '/taisysdev';`, replacePattern())).pipe(babel(babelConfig)).pipe(gulp.dest('./')),
+        gulp.src('./dist/index.html', {base: './'}).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('./')),
 
-    gulp.src(['app/views/**/*.html']).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('dist/views'));
-    gulp.src(['app/**/*.{ico,png,txt,json,png,svn,gif,eot,svg,woff,tff}', '!app/components/**/*', '!app/tests/**/*']).pipe(gulp.dest('dist'));
+        gulp.src(['app/views/**/*.html']).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('dist/views')),
+        gulp.src(['app/**/*.{ico,png,txt,json,png,svn,gif,eot,svg,woff,tff}', '!app/components/**/*', '!app/tests/**/*']).pipe(gulp.dest('dist')),
 
-    // For jQuery-UI Image
-    gulp.src('app/components/jquery-ui/themes/base/images/*.{png,gif}').pipe(gulp.dest('dist/images'));
+        // For jQuery-UI Image
+        gulp.src('app/components/jquery-ui/themes/base/images/*.{png,gif}').pipe(gulp.dest('dist/images'))
+    ];
+    return es.merge(all);
 });
 
 // Ref: https://github.com/gulpjs/gulp/blob/master/docs/API.md#async-task-support
@@ -93,7 +98,7 @@ gulp.task('sass', shell.task([
         'mkdir -p dist && git rev-parse HEAD > dist/head.txt'
 ]));
 
-gulp.task('connect', function() {
+gulp.task('connect', ['recompile'], function() {
     var originRule = require('./.htaccess.js');
 
     // dev
@@ -136,5 +141,5 @@ gulp.task('watch', function() {
 // main
 gulp.task('default', ['before', 'watch'], function() {
     // gulp.start('styles', 'scripts', 'images');
-    gulp.start('recompile', 'connect');
+    gulp.start('connect');
 });
