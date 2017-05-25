@@ -29,6 +29,7 @@ var gulp = require('gulp'),
     os = require('os'),
     sourcemaps = require('gulp-sourcemaps'),
     transform = require('stream').Transform,
+    execSync = require('child_process').execSync,
     es = require('event-stream');  // `async` is an options lib.
 
 
@@ -48,6 +49,15 @@ var babelConfig = {
         "transform-es2015-template-literals"
     ],
     presets: []
+};
+
+var isWindows = function(){
+    try{
+        return execSync('cat /proc/version').includes('Microsoft');
+    }
+    catch(e){
+        return true;
+    }
 };
 
 var getEnv = function(){
@@ -142,7 +152,7 @@ gulp.task('lift', ['sass'], function() {
     devServer('app')();
 
     // skip watch if OS is windows
-    if(os.platform().match(/win32/) !== null)
+    if(isWindows())
         return;
 
     // By Watch files changed to recompile
