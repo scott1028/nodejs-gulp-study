@@ -27,6 +27,8 @@ var gulp = require('gulp'),
     babel = require('gulp-babel'),
     replace = require('gulp-replace'),
     os = require('os'),
+    sourcemaps = require('gulp-sourcemaps'),
+    transform = require('stream').Transform,
     es = require('event-stream');  // `async` is an options lib.
 
 
@@ -37,8 +39,8 @@ var htmlminConfig = {
     removeComments: true
 };
 
+// Ref: https://github.com/babel/gulp-babel, commend: sourceMap no work, please use extra-plugin.
 var babelConfig = {
-    sourceMap: false,
     comments: false,
     minified: true,
     plugins: [
@@ -48,8 +50,37 @@ var babelConfig = {
     presets: []
 };
 
+var getEnv = function(){
+    return process.env.ENV || 'dev';
+};
+
+var devServer = function(path){
+    return function(){
+        var originRule = require('./.htaccess.js');
+        connect.server({
+            root: path,
+            livereload: false,
+            port: originRule.port,
+            // by rewrite Module
+            middleware: function() {
+                return [
+                    modRewrite(originRule.rewrite)
+                ];
+            }
+        });
+    };
+};
+
+var emptyPipe = function(){
+    var stream = new transform({ objectMode: true });
+    stream._transform = function(file, encoding, cb) {
+        return cb(null, file);
+    };
+    return stream;
+};
+
 var replacePattern = function(){
-    var target = process.env.ENV || 'dev';
+    var target = getEnv();
     var map = {};
     map.dev = `window.CONFIG.prefixPath = '/taisysdev';`;
     map.stg = `window.CONFIG.prefixPath = '/taistg';`;
@@ -60,7 +91,7 @@ var replacePattern = function(){
     map.china = `window.CONFIG.prefixPath = '/taiprd';`;
     map.china_qcloud = `window.CONFIG.prefixPath = '/taiprd';`;
     map.china_uat = `window.CONFIG.prefixPath = '/taiuat';`;
-    map.china_demo = `window.CONFIG.prefixPath = '/taiauto';`;
+    map.china_demo = `window.CONFIG.prefixPath = '/taiuat';`;
     return map[target];
 };
 
@@ -75,10 +106,18 @@ gulp.task('recompile', ['prepare'], function() {
     var all = [
         // use csso for minify
         gulp.src('./dist/styles/app.css', {base: './'}).pipe(csso({debug: true})).pipe(gulp.dest('./')),
-        gulp.src('./dist/scripts/app.js', {base: './'}).pipe(replace(`window.CONFIG.prefixPath = '/taisysdev';`, replacePattern())).pipe(babel(babelConfig)).pipe(gulp.dest('./')),
+        gulp.src('./dist/scripts/app.js', {base: './'}).pipe(replace(`window.CONFIG.prefixPath = '/taisysdev';`, replacePattern())).pipe((function(){
+                if(getEnv() === 'dev')
+                    return sourcemaps.init();
+                return emptyPipe();
+            })()).pipe(babel(babelConfig)).pipe((function(){
+                if(getEnv() === 'dev')
+                    return sourcemaps.write('.');
+                return emptyPipe();
+            })()).pipe(gulp.dest('./')),
         gulp.src('./dist/index.html', {base: './'}).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('./')),
 
-        gulp.src(['app/views/**/*.html']).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('dist/views')),
+        gulp.src(['app/views/**/*.html', 'app/views/**/*.css']).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('dist/views')),
         gulp.src(['app/**/*.{ico,png,txt,json,png,svn,gif,eot,svg,woff,tff}', '!app/components/**/*', '!app/tests/**/*']).pipe(gulp.dest('dist')),
 
         // For jQuery-UI Image
@@ -95,51 +134,24 @@ gulp.task('prepare', ['sass'], function(cb){
 // Minify This Project
 gulp.task('sass', shell.task([
         'sass --update ./app/styles/:./app/styles',
-        'mkdir -p dist && git rev-parse HEAD > dist/head.txt'
+        'sass --update ./app/views/:./app/views',
+        'mkdir -p dist && git rev-parse HEAD > dist/head.json',
 ]));
 
-gulp.task('connect', ['recompile'], function() {
-    var originRule = require('./.htaccess.js');
+gulp.task('sassWatch', shell.task([
+    'sass --update ./app/views/:./app/views/',
+]));
 
-    // dev
-    connect.server({
-        root: 'app',
-        livereload: false,
-        port: originRule.port,
-        // by rewrite Module
-        middleware: function() {
-            return [
-                modRewrite(originRule.rewrite)
-            ];
-        }
-    });
+gulp.task('lift', ['sass'], function() {
+    devServer('app')();
 
-    // dist
-    connect.server({
-        root: 'dist',
-        livereload: false,
-        port: originRule.port + 1,
-        // by rewrite Module
-        middleware: function() {
-            return [
-                modRewrite(originRule.rewrite)
-            ];
-        }
-    });
-});
-
-gulp.task('watch', function() {
     // skip watch if OS is windows
     if(os.platform().match(/win32/) === null)
         return;
 
     // By Watch files changed to recompile
-    gulp.watch(['app/index.html', 'app/**/*.js', 'app/**/*.{sass,scss,css}', 'app/**/*.html'], ['recompile']);
+    gulp.watch(['app/views/**/*.scss'], ['sassWatch']);
 });
-
 
 // main
-gulp.task('default', ['before', 'watch'], function() {
-    // gulp.start('styles', 'scripts', 'images');
-    gulp.start('connect');
-});
+gulp.task('default', devServer('dist'));
