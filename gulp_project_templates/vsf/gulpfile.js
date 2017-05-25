@@ -138,19 +138,15 @@ gulp.task('sass', shell.task([
         'mkdir -p dist && git rev-parse HEAD > dist/head.json',
 ]));
 
-gulp.task('sassWatch', shell.task([
-    'sass --update ./app/views/:./app/views/',
-]));
-
 gulp.task('lift', ['sass'], function() {
     devServer('app')();
 
     // skip watch if OS is windows
-    if(os.platform().match(/win32/) === null)
+    if(os.platform().match(/win32/) !== null)
         return;
 
     // By Watch files changed to recompile
-    gulp.watch(['app/views/**/*.scss'], ['sassWatch']);
+    gulp.watch(['app/views/**/*.scss', 'app/styles/**/*.scss'], ['sass']);
 });
 
 // main
