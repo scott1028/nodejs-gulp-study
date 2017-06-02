@@ -5,8 +5,8 @@
   "version": "0.0.0",
   "description": "Taisys VSF",
   "dependencies": {
-    "babel-plugin-transform-es2015-template-literals": "^6.22.0",
     "babel-plugin-transform-remove-console": "^6.8.1",
+    "babel-preset-latest": "^6.24.1",
     "bower": "^1.7.9",
     "bower-nexus3-resolver": "*",
     "connect-modrewrite": "^0.8.5",
@@ -36,11 +36,15 @@
     "gulp-useref": "^3.0.7",
     "gulp-util": "^3.0.7",
     "gulp-wiredep": "0.0.0",
-    "jshint": "^2.9.1"
+    "jshint": "^2.9.1",
+    "postcss-cli": "^4.0.0"
   },
   "devDependencies": {},
   "scripts": {
     "prestart": "npm update",
     "tests": "karma start ./test/karma.conf.js"
-  }
+  },
+  "browserslist": [
+    "last 2 versions"
+  ]
 }

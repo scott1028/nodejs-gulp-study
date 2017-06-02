@@ -60,7 +60,7 @@ var babelConfig = {
 
 var isWindows = function(){
     try{
-        return execSync('cat /proc/version').includes('Microsoft');
+        return execSync('cat /proc/version').indexOf('Microsoft') > -1;
     }
     catch(e){
         return true;
@@ -94,13 +94,6 @@ var emptyPipe = function(){
         return cb(null, file);
     };
     return stream;
-};
-
-var autoprefixerPattern = function(){
-    return autoprefixer({
-        browsers: ['last 2 versions'],
-        cascade: false
-    });
 };
 
 var sourcemapsPattern = {
@@ -144,11 +137,9 @@ gulp.task('recompile', ['prepare'], function() {
         // CSS
         gulp.src('./dist/**/*/*.css', {base: './'})
             .pipe(csso({debug: true, comments: false}))
-            .pipe(autoprefixerPattern())
             .pipe(gulp.dest('./')),
         gulp.src(['app/views/**/*.css'])
             .pipe(csso({debug: true, comments: false}))
-            .pipe(autoprefixerPattern())
             .pipe(gulp.dest('dist/views')),
         // JS
         gulp.src('./dist/scripts/app.js', {base: './'})
@@ -183,6 +174,8 @@ gulp.task('prepare', ['sass'], function(cb){
 gulp.task('sass', shell.task([
         'sass --update ./app/styles/:./app/styles',
         'sass --update ./app/views/:./app/views',
+        './node_modules/.bin/postcss app/styles/**/*.css -r -u autoprefixer --no-map',
+        './node_modules/.bin/postcss app/views/**/*.css -r -u autoprefixer --no-map',
         'mkdir -p dist && git rev-parse HEAD > dist/head.json',
 ]));
 
