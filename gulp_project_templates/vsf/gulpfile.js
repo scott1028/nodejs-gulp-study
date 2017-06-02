@@ -96,6 +96,13 @@ var emptyPipe = function(){
     return stream;
 };
 
+var autoprefixerPattern = function(){
+    return autoprefixer({
+        browsers: ['last 2 versions'],
+        cascade: false
+    });
+};
+
 var replacePattern = function(){
     var target = getEnv();
     var map = {};
@@ -121,11 +128,10 @@ gulp.task('before', function() {
 gulp.task('recompile', ['prepare'], function() {
     // merge all event-stream
     var all = [
-        // use csso for minify
-        gulp.src('./dist/styles/app.css', {base: './'}).pipe(csso({debug: true, comments: false})).pipe(autoprefixer({
-            browsers: ['last 2 versions'],
-            cascade: false
-        })).pipe(gulp.dest('./')),
+        // CSS
+        gulp.src('./dist/**/*/*.css', {base: './'}).pipe(csso({debug: true, comments: false})).pipe(autoprefixerPattern()).pipe(gulp.dest('./')),
+        gulp.src(['app/views/**/*.css']).pipe(csso({debug: true, comments: false})).pipe(autoprefixerPattern()).pipe(gulp.dest('dist/views')),
+        // JS
         gulp.src('./dist/scripts/app.js', {base: './'}).pipe(replace(`window.CONFIG.prefixPath = '/taisysdev';`, replacePattern())).pipe((function(){
                 if(getEnv() === 'dev')
                     return sourcemaps.init();
@@ -135,12 +141,12 @@ gulp.task('recompile', ['prepare'], function() {
                     return sourcemaps.write('.');
                 return emptyPipe();
             })()).pipe(gulp.dest('./')),
+        // HTML
         gulp.src('./dist/index.html', {base: './'}).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('./')),
-
-        gulp.src(['app/views/**/*.html', 'app/views/**/*.css']).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('dist/views')),
+        gulp.src(['app/views/**/*.html']).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('dist/views')),
+        // Asset
         gulp.src(['app/**/*.{ico,png,txt,json,png,svn,gif,eot,svg,woff,tff}', '!app/components/**/*', '!app/tests/**/*']).pipe(gulp.dest('dist')),
-
-        // For jQuery-UI Image
+        // Others
         gulp.src('app/components/jquery-ui/themes/base/images/*.{png,gif}').pipe(gulp.dest('dist/images'))
     ];
     return es.merge(all);
