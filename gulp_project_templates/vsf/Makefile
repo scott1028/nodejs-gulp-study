@@ -10,11 +10,14 @@ node_modules:
 	@yarn cache clean
 	@NODE_ENV=production yarn install
 
+clean:
+	@rm -rf dist
+
 components: node_modules
 	@node_modules/bower/bin/bower cache clean --allow-root
 	@node_modules/bower/bin/bower install --allow-root
 
-global: components
+global: components clean
 	@echo 'Packaging Global UI...'
 	cp app/styles/_override.bootstrap.scss.global app/styles/_override.bootstrap.scss
 	ENV=global ./node_modules/gulp/bin/gulp.js recompile
@@ -22,7 +25,7 @@ global: components
 	cp app/version_prd.json dist/version.json
 	tar -vzcf ssd-ui-prd-global-$(version)-$(timestamp).tar.gz2 ./dist
 
-india: components
+india: components clean
 	@echo 'Packaging India UI...'
 	cp app/styles/_override.bootstrap.scss.in app/styles/_override.bootstrap.scss
 	ENV=india ./node_modules/gulp/bin/gulp.js recompile
@@ -30,7 +33,7 @@ india: components
 	cp app/version_prd.json dist/version.json
 	tar -vzcf ssd-ui-prd-india-$(version)-$(timestamp).tar.gz2 ./dist
 
-china: components
+china: components clean
 	@echo 'Packaging China UI...'
 	cp app/styles/_override.bootstrap.scss.cn app/styles/_override.bootstrap.scss
 	ENV=china ./node_modules/gulp/bin/gulp.js recompile
@@ -38,7 +41,7 @@ china: components
 	cp app/version_prd.json dist/version.json
 	tar -vzcf ssd-ui-prd-china-$(version)-$(timestamp).tar.gz2 ./dist
 
-china_qcloud: components
+china_qcloud: components clean
 	@echo 'Packaging China QCloud UI...'
 	cp app/styles/_override.bootstrap.scss.global app/styles/_override.bootstrap.scss
 	ENV=china_qcloud ./node_modules/gulp/bin/gulp.js recompile
@@ -46,42 +49,42 @@ china_qcloud: components
 	cp app/version_prd.json dist/version.json
 	tar -vzcf ssd-ui-prd-china-qcloud-$(version)-$(timestamp).tar.gz2 ./dist
 
-china_uat: components
+china_uat: components clean
 	@echo 'Packaging China UI...'
 	cp app/styles/_override.bootstrap.scss.cn app/styles/_override.bootstrap.scss
 	ENV=china_uat ./node_modules/gulp/bin/gulp.js recompile
 	cp app/.htaccess_uat_cn_aliyun dist/.htaccess
 	tar -vzcf ssd-ui-uat-china-$(version)-$(timestamp).tar.gz2 ./dist
 
-china_demo: components
+china_demo: components clean
 	@echo 'Packaging China UI...'
 	cp app/styles/_override.bootstrap.scss.cn app/styles/_override.bootstrap.scss
 	ENV=china_demo node_modules/gulp/bin/gulp.js recompile
 	cp app/.htaccess_demo_cn_aliyun dist/.htaccess
 	tar -vzcf ssd-ui-demo-china-$(version)-$(timestamp).tar.gz2 ./dist
 
-dev: components
+dev: components clean
 	@echo 'Packaging Dev UI...'
 	cp app/styles/_override.bootstrap.scss.global app/styles/_override.bootstrap.scss
 	ENV=dev ./node_modules/gulp/bin/gulp.js recompile
 	cp app/.htaccess_dev dist/.htaccess
 	tar -vzcf ssd-ui-dev-$(version)-$(timestamp).tar.gz2 ./dist
 
-stg: components
+stg: components clean
 	@echo 'Packaging Stg UI...'
 	cp app/styles/_override.bootstrap.scss.global app/styles/_override.bootstrap.scss
 	ENV=stg ./node_modules/gulp/bin/gulp.js recompile
 	cp app/.htaccess_stg dist/.htaccess
 	tar -vzcf ssd-ui-stg-$(version)-$(timestamp).tar.gz2 ./dist
 
-uat: components
+uat: components clean
 	@echo 'Packaging Uat UI...'
 	cp app/styles/_override.bootstrap.scss.global app/styles/_override.bootstrap.scss
 	ENV=uat ./node_modules/gulp/bin/gulp.js recompile
 	cp app/.htaccess_uat dist/.htaccess
 	tar -vzcf ssd-ui-uat-$(version)-$(timestamp).tar.gz2 ./dist
 
-india_uat: components
+india_uat: components clean
 	@echo 'Packaging Uat India UI...'
 	cp app/styles/_override.bootstrap.scss.in app/styles/_override.bootstrap.scss
 	ENV=india_uat ./node_modules/gulp/bin/gulp.js recompile
