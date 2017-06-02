@@ -103,18 +103,6 @@ var autoprefixerPattern = function(){
     });
 };
 
-var replacePattern1 = function(){
-    if(getEnv() === 'dev')
-        return sourcemaps.init();
-    return emptyPipe();
-};
-
-var replacePattern2 = function(){
-    if(getEnv() === 'dev')
-        return sourcemaps.write('.');
-    return emptyPipe();
-};
-
 var sourcemapsPattern = {
     init: function(){
         if(getEnv() === 'dev')
