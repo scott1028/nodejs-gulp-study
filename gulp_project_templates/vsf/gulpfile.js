@@ -45,10 +45,17 @@ var babelConfig = {
     comments: false,
     minified: true,
     plugins: [
-        "transform-remove-console",
-        "transform-es2015-template-literals"
+        "transform-remove-console"
     ],
-    presets: []
+    presets: [
+        [
+            "latest", {
+                "es2015": {
+                    "modules": false
+                }
+            }
+        ]
+    ]
 };
 
 var isWindows = function(){
@@ -115,7 +122,10 @@ gulp.task('recompile', ['prepare'], function() {
     // merge all event-stream
     var all = [
         // use csso for minify
-        gulp.src('./dist/styles/app.css', {base: './'}).pipe(csso({debug: true})).pipe(gulp.dest('./')),
+        gulp.src('./dist/styles/app.css', {base: './'}).pipe(csso({debug: true, comments: false})).pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        })).pipe(gulp.dest('./')),
         gulp.src('./dist/scripts/app.js', {base: './'}).pipe(replace(`window.CONFIG.prefixPath = '/taisysdev';`, replacePattern())).pipe((function(){
                 if(getEnv() === 'dev')
                     return sourcemaps.init();
