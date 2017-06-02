@@ -103,6 +103,31 @@ var autoprefixerPattern = function(){
     });
 };
 
+var replacePattern1 = function(){
+    if(getEnv() === 'dev')
+        return sourcemaps.init();
+    return emptyPipe();
+};
+
+var replacePattern2 = function(){
+    if(getEnv() === 'dev')
+        return sourcemaps.write('.');
+    return emptyPipe();
+};
+
+var sourcemapsPattern = {
+    init: function(){
+        if(getEnv() === 'dev')
+            return sourcemaps.init();
+        return emptyPipe();
+    },
+    write: function(){
+        if(getEnv() === 'dev')
+            return sourcemaps.write('.');
+        return emptyPipe();
+    }
+};
+
 var replacePattern = function(){
     var target = getEnv();
     var map = {};
@@ -129,25 +154,34 @@ gulp.task('recompile', ['prepare'], function() {
     // merge all event-stream
     var all = [
         // CSS
-        gulp.src('./dist/**/*/*.css', {base: './'}).pipe(csso({debug: true, comments: false})).pipe(autoprefixerPattern()).pipe(gulp.dest('./')),
-        gulp.src(['app/views/**/*.css']).pipe(csso({debug: true, comments: false})).pipe(autoprefixerPattern()).pipe(gulp.dest('dist/views')),
+        gulp.src('./dist/**/*/*.css', {base: './'})
+            .pipe(csso({debug: true, comments: false}))
+            .pipe(autoprefixerPattern())
+            .pipe(gulp.dest('./')),
+        gulp.src(['app/views/**/*.css'])
+            .pipe(csso({debug: true, comments: false}))
+            .pipe(autoprefixerPattern())
+            .pipe(gulp.dest('dist/views')),
         // JS
-        gulp.src('./dist/scripts/app.js', {base: './'}).pipe(replace(`window.CONFIG.prefixPath = '/taisysdev';`, replacePattern())).pipe((function(){
-                if(getEnv() === 'dev')
-                    return sourcemaps.init();
-                return emptyPipe();
-            })()).pipe(babel(babelConfig)).pipe((function(){
-                if(getEnv() === 'dev')
-                    return sourcemaps.write('.');
-                return emptyPipe();
-            })()).pipe(gulp.dest('./')),
+        gulp.src('./dist/scripts/app.js', {base: './'})
+            .pipe(replace(`window.CONFIG.prefixPath = '/taisysdev';`, replacePattern()))
+            .pipe(sourcemapsPattern.init())
+            .pipe(babel(babelConfig))
+            .pipe(sourcemapsPattern.write())
+            .pipe(gulp.dest('./')),
         // HTML
-        gulp.src('./dist/index.html', {base: './'}).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('./')),
-        gulp.src(['app/views/**/*.html']).pipe(htmlmin(htmlminConfig)).pipe(gulp.dest('dist/views')),
+        gulp.src('./dist/index.html', {base: './'})
+            .pipe(htmlmin(htmlminConfig))
+            .pipe(gulp.dest('./')),
+        gulp.src(['app/views/**/*.html'])
+            .pipe(htmlmin(htmlminConfig))
+            .pipe(gulp.dest('dist/views')),
         // Asset
-        gulp.src(['app/**/*.{ico,png,txt,json,png,svn,gif,eot,svg,woff,tff}', '!app/components/**/*', '!app/tests/**/*']).pipe(gulp.dest('dist')),
+        gulp.src(['app/**/*.{ico,png,txt,json,png,svn,gif,eot,svg,woff,tff}', '!app/components/**/*', '!app/tests/**/*'])
+            .pipe(gulp.dest('dist')),
         // Others
-        gulp.src('app/components/jquery-ui/themes/base/images/*.{png,gif}').pipe(gulp.dest('dist/images'))
+        gulp.src('app/components/jquery-ui/themes/base/images/*.{png,gif}')
+            .pipe(gulp.dest('dist/images'))
     ];
     return es.merge(all);
 });
