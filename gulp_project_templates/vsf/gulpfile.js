@@ -112,7 +112,7 @@ var sourcemapsPattern = {
 var replacePattern = function(){
     var target = getEnv();
     var map = {};
-    map.dev = `window.CONFIG.prefixPath = '/taisysdev';`;
+    map.dev = `window.CONFIG.prefixPath = '/taidev';`;
     map.stg = `window.CONFIG.prefixPath = '/taistg';`;
     map.uat = `window.CONFIG.prefixPath = '/taiuat';`;
     map.global = `window.CONFIG.prefixPath = '/taiprd';`;
@@ -170,12 +170,10 @@ gulp.task('prepare', ['sass'], function(cb){
     gulp.src('app/index.html').pipe(useref()).on('error', gutil.log).pipe(gulp.dest('./dist')).on('end', cb);
 });
 
-// Minify This Project
+// Minify This Project(This plugin will apply env variables of node_mobuldes)
 gulp.task('sass', shell.task([
-        'sass --update ./app/styles/:./app/styles',
-        'sass --update ./app/views/:./app/views',
-        './node_modules/.bin/postcss app/styles/**/*.css -r -u autoprefixer --no-map',
-        './node_modules/.bin/postcss app/views/**/*.css -r -u autoprefixer --no-map',
+        'sass --update ./app/styles/:./app/styles && postcss app/styles/**/*.css -r -u autoprefixer --no-map',
+        'sass --update ./app/views/:./app/views && postcss app/views/**/*.css -r -u autoprefixer --no-map',
         'mkdir -p dist && git rev-parse HEAD > dist/head.json',
 ]));
 
