@@ -1,12 +1,11 @@
 timestamp=`date +"%Y%m%d%H%M%S"`
-version=`cat app/version_prd.json | grep "version" | sed 's/[ a-zA-Z:"]//g'`
+version=`cat dist/version.json | grep "version" | sed 's/[ a-zA-Z:"]//g'`
 
 now:
 	@echo $(timestamp)
 	@echo $(version)
 
 node_modules:
-	@gem install sass
 	@yarn cache clean
 	@NODE_ENV=production yarn install
 
@@ -23,7 +22,7 @@ global: components clean
 	ENV=global ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD//g app/version.json > dist/version.json
 	cp app/.htaccess_prd dist/.htaccess
-	tar -vzcf ssd-ui-prd-global-$(version)-$(timestamp).tar.gz2 ./dist
+	tar -vzcf vsf-ui-prd-global-$(version)-$(timestamp).tar.gz2 ./dist
 
 india: components clean
 	@echo 'Packaging India UI...'
@@ -31,7 +30,7 @@ india: components clean
 	ENV=india ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD//g app/version.json > dist/version.json
 	cp app/.htaccess_prd_in dist/.htaccess
-	tar -vzcf ssd-ui-prd-india-$(version)-$(timestamp).tar.gz2 ./dist
+	tar -vzcf vsf-ui-prd-india-$(version)-$(timestamp).tar.gz2 ./dist
 
 china: components clean
 	@echo 'Packaging China UI...'
@@ -39,7 +38,7 @@ china: components clean
 	ENV=china ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD//g app/version.json > dist/version.json
 	cp app/.htaccess_prd_cn_aliyun dist/.htaccess
-	tar -vzcf ssd-ui-prd-china-$(version)-$(timestamp).tar.gz2 ./dist
+	tar -vzcf vsf-ui-prd-china-$(version)-$(timestamp).tar.gz2 ./dist
 
 china_qcloud: components clean
 	@echo 'Packaging China QCloud UI...'
@@ -47,7 +46,7 @@ china_qcloud: components clean
 	ENV=china_qcloud ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD//g app/version.json > dist/version.json
 	cp app/.htaccess_prd_cn_qcloud dist/.htaccess
-	tar -vzcf ssd-ui-prd-china-qcloud-$(version)-$(timestamp).tar.gz2 ./dist
+	tar -vzcf vsf-ui-prd-china-qcloud-$(version)-$(timestamp).tar.gz2 ./dist
 
 china_uat: components clean
 	@echo 'Packaging China UI...'
@@ -55,7 +54,7 @@ china_uat: components clean
 	ENV=china_uat ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD/@`git rev-parse --short=9 HEAD`/g app/version.json > dist/version.json
 	cp app/.htaccess_uat_cn_aliyun dist/.htaccess
-	tar -vzcf ssd-ui-uat-china-$(version)-$(timestamp).tar.gz2 ./dist
+	tar -vzcf vsf-ui-uat-china-$(version)-$(timestamp).tar.gz2 ./dist
 
 china_demo: components clean
 	@echo 'Packaging China UI...'
@@ -63,7 +62,7 @@ china_demo: components clean
 	ENV=china_demo node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD/@`git rev-parse --short=9 HEAD`/g app/version.json > dist/version.json
 	cp app/.htaccess_demo_cn_aliyun dist/.htaccess
-	tar -vzcf ssd-ui-demo-china-$(version)-$(timestamp).tar.gz2 ./dist
+	tar -vzcf vsf-ui-demo-china-$(version)-$(timestamp).tar.gz2 ./dist
 
 dev: components clean
 	@echo 'Packaging Dev UI...'
@@ -71,7 +70,7 @@ dev: components clean
 	ENV=dev ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD/@`git rev-parse --short=9 HEAD`/g app/version.json > dist/version.json
 	cp app/.htaccess_dev dist/.htaccess
-	tar -vzcf ssd-ui-dev-$(version)-$(timestamp).tar.gz2 ./dist
+	tar -vzcf vsf-ui-dev-$(version)-$(timestamp).tar.gz2 ./dist
 
 stg: components clean
 	@echo 'Packaging Stg UI...'
@@ -79,7 +78,7 @@ stg: components clean
 	ENV=stg ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD/@`git rev-parse --short=9 HEAD`/g app/version.json > dist/version.json
 	cp app/.htaccess_stg dist/.htaccess
-	tar -vzcf ssd-ui-stg-$(version)-$(timestamp).tar.gz2 ./dist
+	tar -vzcf vsf-ui-stg-$(version)-$(timestamp).tar.gz2 ./dist
 
 uat: components clean
 	@echo 'Packaging Uat UI...'
@@ -87,7 +86,7 @@ uat: components clean
 	ENV=uat ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD/@`git rev-parse --short=9 HEAD`/g app/version.json > dist/version.json
 	cp app/.htaccess_uat dist/.htaccess
-	tar -vzcf ssd-ui-uat-$(version)-$(timestamp).tar.gz2 ./dist
+	tar -vzcf vsf-ui-uat-$(version)-$(timestamp).tar.gz2 ./dist
 
 india_uat: components clean
 	@echo 'Packaging Uat India UI...'
@@ -95,7 +94,7 @@ india_uat: components clean
 	ENV=india_uat ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD/@`git rev-parse --short=9 HEAD`/g app/version.json > dist/version.json
 	cp app/.htaccess_uat_in dist/.htaccess
-	tar -vzcf ssd-ui-uat-india-$(version)-$(timestamp).tar.gz2 ./dist
+	tar -vzcf vsf-ui-uat-india-$(version)-$(timestamp).tar.gz2 ./dist
 
 lift: components
 	@echo 'Launch RD Develop Server'
