@@ -125,6 +125,9 @@ var replacePattern = function(){
     return map[target];
 };
 
+const CMD = isWindows() ? 'MKDIR 2> NUL' : 'mkdir -p';
+const CT = isWindows() ? '&' : '&&';
+
 // To do your clean task here.
 gulp.task('before', function() {
     gutil.log('Do Clean Task!');
@@ -172,17 +175,13 @@ gulp.task('prepare', ['sass'], function(cb){
 
 // Minify This Project(This plugin will apply env variables of node_mobuldes)
 gulp.task('sass', shell.task([
-        'sass --update ./app/styles/:./app/styles && postcss app/styles/**/*.css -r -u autoprefixer --no-map',
-        'sass --update ./app/views/:./app/views && postcss app/views/**/*.css -r -u autoprefixer --no-map',
-        'mkdir -p dist && git rev-parse HEAD > dist/head.json',
+        `node-sass ./app/styles/ -o ./app/styles ${CT} postcss app/styles/**/*.css -r -u autoprefixer --no-map`,
+        `node-sass ./app/views/ -o ./app/views ${CT} postcss app/views/**/*.css -r -u autoprefixer --no-map`,
+        `${CMD} dist ${CT} git rev-parse HEAD > dist/head.json`
 ]));
 
 gulp.task('lift', ['sass'], function() {
     devServer('app')();
-
-    // skip watch if OS is windows
-    if(isWindows())
-        return;
 
     // By Watch files changed to recompile
     gulp.watch(['app/views/**/*.scss', 'app/styles/**/*.scss'], ['sass']);

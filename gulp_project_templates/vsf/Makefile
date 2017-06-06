@@ -1,12 +1,11 @@
 timestamp=`date +"%Y%m%d%H%M%S"`
-version=`cat app/version_prd.json | grep "version" | sed 's/[ a-zA-Z:"]//g'`
+version=`cat dist/version.json | grep "version" | sed 's/    "version": "//g' | sed 's/"//g'`
 
 now:
 	@echo $(timestamp)
 	@echo $(version)
 
 node_modules:
-	@gem install sass
 	@yarn cache clean
 	@NODE_ENV=production yarn install
 
@@ -22,80 +21,64 @@ global: components clean
 	cp app/styles/_override.bootstrap.scss.global app/styles/_override.bootstrap.scss
 	ENV=global ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD//g app/version.json > dist/version.json
-	cp app/.htaccess_prd dist/.htaccess
-	tar -vzcf ssd-ui-prd-global-$(version)-$(timestamp).tar.gz2 ./dist
+	ENV=global node_modules/.bin/includer -s conf -d dist -m @@TARGET:global_prd
+	tar -vzcf vsf-ui-prd-global-$(version)-$(timestamp).tar.gz2 ./dist
 
 india: components clean
 	@echo 'Packaging India UI...'
 	cp app/styles/_override.bootstrap.scss.in app/styles/_override.bootstrap.scss
 	ENV=india ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD//g app/version.json > dist/version.json
-	cp app/.htaccess_prd_in dist/.htaccess
-	tar -vzcf ssd-ui-prd-india-$(version)-$(timestamp).tar.gz2 ./dist
+	ENV=india node_modules/.bin/includer -s conf -d dist -m @@TARGET:in_prd
+	tar -vzcf vsf-ui-prd-india-$(version)-$(timestamp).tar.gz2 ./dist
 
 china: components clean
 	@echo 'Packaging China UI...'
 	cp app/styles/_override.bootstrap.scss.cn app/styles/_override.bootstrap.scss
 	ENV=china ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD//g app/version.json > dist/version.json
-	cp app/.htaccess_prd_cn_aliyun dist/.htaccess
-	tar -vzcf ssd-ui-prd-china-$(version)-$(timestamp).tar.gz2 ./dist
-
-china_qcloud: components clean
-	@echo 'Packaging China QCloud UI...'
-	cp app/styles/_override.bootstrap.scss.global app/styles/_override.bootstrap.scss
-	ENV=china_qcloud ./node_modules/gulp/bin/gulp.js recompile
-	@sed -e s/@HEAD//g app/version.json > dist/version.json
-	cp app/.htaccess_prd_cn_qcloud dist/.htaccess
-	tar -vzcf ssd-ui-prd-china-qcloud-$(version)-$(timestamp).tar.gz2 ./dist
+	ENV=china node_modules/.bin/includer -s conf -d dist -m @@TARGET:cn_prd
+	tar -vzcf vsf-ui-prd-china-$(version)-$(timestamp).tar.gz2 ./dist
 
 china_uat: components clean
 	@echo 'Packaging China UI...'
 	cp app/styles/_override.bootstrap.scss.cn app/styles/_override.bootstrap.scss
 	ENV=china_uat ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD/@`git rev-parse --short=9 HEAD`/g app/version.json > dist/version.json
-	cp app/.htaccess_uat_cn_aliyun dist/.htaccess
-	tar -vzcf ssd-ui-uat-china-$(version)-$(timestamp).tar.gz2 ./dist
-
-china_demo: components clean
-	@echo 'Packaging China UI...'
-	cp app/styles/_override.bootstrap.scss.cn app/styles/_override.bootstrap.scss
-	ENV=china_demo node_modules/gulp/bin/gulp.js recompile
-	@sed -e s/@HEAD/@`git rev-parse --short=9 HEAD`/g app/version.json > dist/version.json
-	cp app/.htaccess_demo_cn_aliyun dist/.htaccess
-	tar -vzcf ssd-ui-demo-china-$(version)-$(timestamp).tar.gz2 ./dist
+	ENV=china_uat node_modules/.bin/includer -s conf -d dist -m @@TARGET:cn_uat
+	tar -vzcf vsf-ui-uat-china-$(version)-$(timestamp).tar.gz2 ./dist
 
 dev: components clean
 	@echo 'Packaging Dev UI...'
 	cp app/styles/_override.bootstrap.scss.global app/styles/_override.bootstrap.scss
 	ENV=dev ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD/@`git rev-parse --short=9 HEAD`/g app/version.json > dist/version.json
-	cp app/.htaccess_dev dist/.htaccess
-	tar -vzcf ssd-ui-dev-$(version)-$(timestamp).tar.gz2 ./dist
+	ENV=dev node_modules/.bin/includer -s conf -d dist -m @@TARGET:global_dev
+	tar -vzcf vsf-ui-dev-$(version)-$(timestamp).tar.gz2 ./dist
 
 stg: components clean
 	@echo 'Packaging Stg UI...'
 	cp app/styles/_override.bootstrap.scss.global app/styles/_override.bootstrap.scss
 	ENV=stg ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD/@`git rev-parse --short=9 HEAD`/g app/version.json > dist/version.json
-	cp app/.htaccess_stg dist/.htaccess
-	tar -vzcf ssd-ui-stg-$(version)-$(timestamp).tar.gz2 ./dist
+	ENV=stg node_modules/.bin/includer -s conf -d dist -m @@TARGET:global_stg
+	tar -vzcf vsf-ui-stg-$(version)-$(timestamp).tar.gz2 ./dist
 
 uat: components clean
 	@echo 'Packaging Uat UI...'
 	cp app/styles/_override.bootstrap.scss.global app/styles/_override.bootstrap.scss
 	ENV=uat ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD/@`git rev-parse --short=9 HEAD`/g app/version.json > dist/version.json
-	cp app/.htaccess_uat dist/.htaccess
-	tar -vzcf ssd-ui-uat-$(version)-$(timestamp).tar.gz2 ./dist
+	ENV=uat node_modules/.bin/includer -s conf -d dist -m @@TARGET:global_uat
+	tar -vzcf vsf-ui-uat-$(version)-$(timestamp).tar.gz2 ./dist
 
 india_uat: components clean
 	@echo 'Packaging Uat India UI...'
 	cp app/styles/_override.bootstrap.scss.in app/styles/_override.bootstrap.scss
 	ENV=india_uat ./node_modules/gulp/bin/gulp.js recompile
 	@sed -e s/@HEAD/@`git rev-parse --short=9 HEAD`/g app/version.json > dist/version.json
-	cp app/.htaccess_uat_in dist/.htaccess
-	tar -vzcf ssd-ui-uat-india-$(version)-$(timestamp).tar.gz2 ./dist
+	ENV=india_uat node_modules/.bin/includer -s conf -d dist -m @@TARGET:in_uat
+	tar -vzcf vsf-ui-uat-india-$(version)-$(timestamp).tar.gz2 ./dist
 
 lift: components
 	@echo 'Launch RD Develop Server'

@@ -36,7 +36,9 @@
     "gulp-useref": "^3.0.7",
     "gulp-util": "^3.0.7",
     "gulp-wiredep": "0.0.0",
+    "includer-cli": "^0.0.6-b",
     "jshint": "^2.9.1",
+    "node-sass": "^4.5.3",
     "postcss-cli": "^4.0.0"
   },
   "devDependencies": {},
