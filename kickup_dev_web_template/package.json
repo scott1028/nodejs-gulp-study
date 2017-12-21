@@ -1,9 +1,9 @@
 {
-  "name": "DEV Tool",
+  "name": "DevTool",
   "main": "dist/index.html",
   "private": true,
   "version": "0.0.0",
-  "description": "Dev Tool",
+  "description": "DevTool",
   "dependencies": {
     "bower-nexus3-resolver": "*",
     "connect": "^3.5.1",
