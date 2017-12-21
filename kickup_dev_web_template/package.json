@@ -1,0 +1,22 @@
+{
+  "name": "DEV Tool",
+  "main": "dist/index.html",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Dev Tool",
+  "dependencies": {
+    "bower-nexus3-resolver": "*",
+    "connect": "^3.5.1",
+    "connect-modrewrite": "^0.8.5",
+    "gulp": "^3.9.1",
+    "gulp-shell": "^0.5.2",
+    "gulp-util": "^3.0.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "make lift"
+  },
+  "browserslist": [
+    "last 2 versions"
+  ]
+}
