@@ -42,7 +42,7 @@ var devServer = function(){
             if(url.endsWith('/') && fs.existsSync(`${cwd}/app${url}greet.html`)){
                 console.log(`[INFO]`.cyan, url, qs);
                 // make rewrite manually, this is modify by function
-                req.url = `${url}/greet.html${qs}`;
+                req.url = `${url}greet.html${qs}`;
             }
 
             modRewrite([
