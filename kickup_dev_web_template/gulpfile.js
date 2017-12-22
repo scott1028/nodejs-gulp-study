@@ -9,7 +9,25 @@ const http = require('http'),
     env = process.env.ENV,
     fs = require('fs'),
     gutil = require('gulp-util'),
+    colors = require('colors'),
     cwd = process.cwd();
+
+var isWindows = function(){
+    try{
+        return execSync('cat /proc/version').indexOf('Microsoft') > -1;
+    }
+    catch(e){
+        return true;
+    }
+};
+
+var getEnv = function(){
+    return process.env.ENV || 'dev';
+};
+
+const CMD = isWindows() ? 'MKDIR 2> NUL' : 'mkdir -p';
+const CT = isWindows() ? '&' : '&&';
+const PORT = 3333;
 
 var devServer = function(){
     var url, qs;
@@ -21,79 +39,24 @@ var devServer = function(){
             if(qs.length > 0)
                 qs = `?${qs}`;
 
-            //
-            if(url.endsWith('/')){
-                // endsWith /
-                if(fs.existsSync(`${cwd}/app${url}`) && fs.statSync(`${cwd}/app${url}`).isDirectory()){
-                    console.log(1, [url, qs]);
-                    if(qs){
-                        req.url = `${url}index.php${qs}`;
-                    }
-                    else{
-                        req.url = `${url}index.php`;   
-                    }
-                    modRewrite([
-                        '^(.*)$ http://127.0.0.1:13334$1 [P]',
-                    ])(req, res, next);
-                    return;
-                }
-
-                // others
-                res.write('Not fould');
-                res.end();
-                return;
+            if(url.endsWith('/') && fs.existsSync(`${cwd}/app${url}greet.html`)){
+                console.log(`[INFO]`.cyan, url, qs);
+                // make rewrite manually, this is modify by function
+                req.url = `${url}/greet.html${qs}`;
             }
-            else{
-                // ! endsWith /
-                if(fs.existsSync(`${cwd}/app${url}`) && fs.statSync(`${cwd}/app${url}`).isDirectory()){
-                    console.log(3, [url, qs]);
-                    if(qs){
-                        modRewrite([
-                            `^(.*)$ $1/ [R]`,
-                        ])(req, res, next);
-                        return;
-                    }
-                    else{
-                        modRewrite([
-                            `^(.*)$ $1/${qs} [R]`,
-                        ])(req, res, next);
-                        return;
-                    }
-                }
 
-                // is a file
-                if(fs.existsSync(`${cwd}/app${url}`) && !fs.statSync(`${cwd}/app${url}`).isDirectory()){
-                    console.log(4, [url, qs]);
-                    req.url = `${url}${qs}`;
-                    modRewrite([
-                        '^(.*)$ http://127.0.0.1:13334$1 [P]',
-                    ])(req, res, next);
-                    return;
-                }
-                
-                // is a file, after append `.php`.
-                if(fs.existsSync(`${cwd}/app${url}.php`)){
-                    console.log(5, [url, qs]);
-                    req.url = `${url}.php${qs}`;
-                    modRewrite([
-                        '^(.*)$ http://127.0.0.1:13334$1 [P]',
-                    ])(req, res, next);
-                    return;
-                }
-
-                // others
-                res.write('Not fould');
-                res.end();
-                return;
-            }
+            modRewrite([
+                `^/api/(.*?)$ http://graph.facebook.com/api/test/$1 [P]`,
+                `^(.*)$ http://127.0.0.1:1${PORT}$1 [P]`,
+            ])(req, res, next);
         });
-        var server = http.createServer(app).listen(3333);
+        var server = http.createServer(app).listen(PORT);
     };
 };
 
 gulp.task('lift', [], function(){
     devServer()();
     shell.task([
-        `cd app && ENV=DEV php5.6 -t . -S 127.0.0.1:13334`  // change ui server here
+        `cd app ${CT} http-server -p 1${PORT}`  // change ui server here
     ])();
 });
