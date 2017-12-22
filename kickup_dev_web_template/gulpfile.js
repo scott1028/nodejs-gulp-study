@@ -42,6 +42,9 @@ var devServer = function(){
             if(url.endsWith('/') && fs.existsSync(`${cwd}/app${url}greet.html`)){
                 console.log(`[INFO]`.cyan, url, qs);
                 // make rewrite manually, this is modify by function
+                //
+                // equal only rewrite with [L]:
+                // => '!\\.js|\\.html|\\.css|\\.png|\\.jpg|\\.gif|\\.svg|\\.ttf|\\.woff|\\.ico$ /greet.html [L]'
                 req.url = `${url}greet.html${qs}`;
             }
 
